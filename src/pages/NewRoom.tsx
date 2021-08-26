@@ -2,7 +2,7 @@ import { FormEvent, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import illustrationImg from '../assets/images/illustration.svg';
 import logoImg from '../assets/images/logo.svg';
-import { Button } from '../components/Button';
+import { Button } from '../components/Button/Button';
 import '../styles/auth.scss';
 import firebase from 'firebase';
 import { useAuth } from '../hooks/useAuth';
