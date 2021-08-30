@@ -7,6 +7,7 @@ import { Button } from '../components/Button/Button';
 import { useAuth } from '../hooks/useAuth';
 import { FormEvent, useState } from 'react';
 import { firebase } from '../services/firebase';
+import toast, { Toaster } from 'react-hot-toast';
 
 export function Home() {
   const history = useHistory();
@@ -27,7 +28,10 @@ export function Home() {
     const roomRef = await firebase.database().ref(`rooms/${roomCode}`).get();
 
     if (!roomRef.exists()) {
-      alert('Room does not exist');
+      toast.error('Room does not exist', {
+        duration: 1000,
+        position: 'top-center',
+      });
       return;
     }
     if (roomRef.val().endedAt) {
@@ -55,6 +59,7 @@ export function Home() {
           </button>
           <div className={'separator'}>ou entre em uma sala</div>
           <form onSubmit={handleJoinRoom}>
+            <Toaster />
             <input
               type={'text'}
               value={roomCode}
