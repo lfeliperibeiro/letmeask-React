@@ -9,6 +9,9 @@ import DeleteImg from '../../assets/images/delete.svg';
 import { firebase } from '../../services/firebase';
 import CheckImg from '../../assets/images/check.svg';
 import AnswerImg from '../../assets/images/answer.svg';
+import { useState } from 'react';
+import { ModalConfirmation } from '../../components/ModalConfirmation/ModalConfirmation';
+import DeleteConfirmationImg from '../../assets/images/deleteConfimation.svg';
 
 type RoomParams = {
   id: string;
@@ -22,6 +25,16 @@ export function AdminRoom() {
   const roomId = params.id;
   const { questions, title } = useRoom(roomId);
 
+  const [modalIsOpen, setIsOpen] = useState(false);
+
+  function openModal() {
+    setIsOpen(true);
+  }
+
+  function closeModal() {
+    setIsOpen(false);
+  }
+
   async function handleEndRoom() {
     await firebase.database().ref(`rooms/${roomId}`).update({
       endedAt: new Date(),
@@ -30,13 +43,10 @@ export function AdminRoom() {
   }
 
   async function handleDeleteQuestion(questionId: string) {
-    // todo: colocar um modal
-    if (window.confirm('Tem certeza que deseja excluir esta pergunta?')) {
-      await firebase
-        .database()
-        .ref(`rooms/${roomId}/questions/${questionId}`)
-        .remove();
-    }
+    await firebase
+      .database()
+      .ref(`rooms/${roomId}/questions/${questionId}`)
+      .remove();
   }
 
   async function handleCheckQuestionAsAnswered(questionId: string) {
@@ -108,12 +118,16 @@ export function AdminRoom() {
                     </button>
                   </>
                 )}
-                <button
-                  type="button"
-                  onClick={() => handleDeleteQuestion(question.id)}
-                >
+                <button type="button" onClick={openModal}>
                   <img src={DeleteImg} alt={'remover pergunta'} />
-                </button>{' '}
+                </button>
+                <ModalConfirmation
+                  image={DeleteConfirmationImg}
+                  openModal={openModal}
+                  closeModal={closeModal}
+                  modalIsOpen={modalIsOpen}
+                  confirmation={() => handleDeleteQuestion(question.id)}
+                />
               </Question>
             );
           })}
